@@ -75,21 +75,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    final appBar = AppBar(
-      title: Text(
-        'Personal Expenses',
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => showNewTransactionSheet(context),
-        )
-      ],
-    );
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text(
+              'Personal Expenses',
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () => showNewTransactionSheet(context),
+                  child: Icon(CupertinoIcons.add),
+                ),
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text(
+              'Personal Expenses',
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => showNewTransactionSheet(context),
+              )
+            ],
+          );
     final showChartSwitch = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Show Chart'),
+        Text(
+          'Show Chart',
+          style: Theme.of(context).textTheme.title,
+        ),
         Switch.adaptive(
           activeColor: Theme.of(context).accentColor,
           value: _showChart,
@@ -100,33 +118,42 @@ class _MyHomePageState extends State<MyHomePage> {
     final availableHeight = MediaQuery.of(context).size.height -
         appBar.preferredSize.height -
         MediaQuery.of(context).padding.top;
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (isLandscape) showChartSwitch,
-            if (!isLandscape || _showChart)
-              Container(
-                height: (availableHeight) * (isLandscape ? 0.7 : 0.3),
-                child: Chart(_recentTransactions),
-              ),
-            if (!isLandscape || !_showChart)
-              Container(
-                  height: availableHeight * (isLandscape ? 1 : 0.7),
-                  child: TransactionsList(transactions, _deleteTransaction)),
-          ],
-        ),
-      ),
-      floatingActionButton: (Platform.isIOS)
-          ? Container()
-          : FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () => showNewTransactionSheet(context),
+
+    final body = SafeArea(
+        child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (isLandscape) showChartSwitch,
+          if (!isLandscape || _showChart)
+            Container(
+              height: (availableHeight) * (isLandscape ? 0.7 : 0.3),
+              child: Chart(_recentTransactions),
             ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
+          if (!isLandscape || !_showChart)
+            Container(
+                height: availableHeight * (isLandscape ? 1 : 0.7),
+                child: TransactionsList(transactions, _deleteTransaction)),
+        ],
+      ),
+    ));
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: body,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: body,
+            floatingActionButton: (Platform.isIOS)
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => showNewTransactionSheet(context),
+                  ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
   }
 
   void showNewTransactionSheet(BuildContext context) {

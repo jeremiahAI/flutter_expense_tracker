@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function(String, double, DateTime) addNewTransaction;
@@ -31,18 +36,35 @@ class _NewTransactionState extends State<NewTransaction> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              TextField(
-                decoration: InputDecoration(labelText: "Title"),
-                controller: _titleController,
-                textInputAction: TextInputAction.next,
-                onSubmitted: (_) => _submit(),
+              Platform.isIOS
+                  ? CupertinoTextField(
+                      placeholder: "Title",
+                      controller: _titleController,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => _submit(),
+                    )
+                  : TextField(
+                      decoration: InputDecoration(labelText: "Title"),
+                      controller: _titleController,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => _submit(),
+                    ),
+              SizedBox(
+                height: 4,
               ),
-              TextField(
-                decoration: InputDecoration(labelText: "Amount"),
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submit(),
-              ),
+              Platform.isIOS
+                  ? CupertinoTextField(
+                      placeholder: "Amount",
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (_) => _submit(),
+                    )
+                  : TextField(
+                      decoration: InputDecoration(labelText: "Amount"),
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (_) => _submit(),
+                    ),
               Container(
                 height: 70,
                 child: Row(
@@ -52,23 +74,27 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? "No date chosen!"
                           : DateFormat.yMMMd().format(selectedDate)),
                     ),
-                    FlatButton(
-                      onPressed: _showDatePicker,
-                      child: Text(
-                        "Choose Date",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      textColor: Theme.of(context).primaryColor,
+                    AdaptiveFlatButton(
+                      text: "Choose Date",
+                      clickHandler: _showDatePicker,
                     ),
                   ],
                 ),
               ),
-              RaisedButton(
-                child: Text("Add Transaction"),
-                onPressed: _submit,
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).textTheme.button.color,
-              )
+              Platform.isIOS
+                  ? CupertinoButton(
+                      child: Text("Add Transaction"),
+                      onPressed: _submit,
+                      color: Theme.of(context).primaryColor,
+                      // textColor: Theme.of(context).textTheme.button.color,
+                      // color: Theme.of(context).primaryColor,
+                    )
+                  : RaisedButton(
+                      child: Text("Add Transaction"),
+                      onPressed: _submit,
+                      color: Theme.of(context).primaryColor,
+                      textColor: Theme.of(context).textTheme.button.color,
+                    )
             ],
           ),
         ),

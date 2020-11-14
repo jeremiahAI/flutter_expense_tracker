@@ -59,10 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> transactions = [
     Transaction(id: '1', title: "Shoes", amount: 90.99, date: DateTime.now()),
     Transaction(id: '2', title: "Rent", amount: 909.99, date: DateTime.now()),
-    Transaction(id: '2', title: "Rent", amount: 99.99, date: DateTime.now()),
-    Transaction(id: '2', title: "Rent", amount: 909.99, date: DateTime.now()),
-    Transaction(id: '2', title: "Rent", amount: 909.99, date: DateTime.now()),
-    Transaction(id: '2', title: "Rent", amount: 909.99, date: DateTime.now()),
+    Transaction(id: '3', title: "Rent", amount: 99.99, date: DateTime.now()),
+    Transaction(id: '4', title: "Rent", amount: 909.99, date: DateTime.now()),
+    Transaction(id: '5', title: "Rent", amount: 909.99, date: DateTime.now()),
+    Transaction(id: '6', title: "Rent", amount: 909.99, date: DateTime.now()),
   ];
   bool _showChart = true;
 

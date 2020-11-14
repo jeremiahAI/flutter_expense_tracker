@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expense_tracker/models/transaction.dart';
 import 'package:intl/intl.dart';
 
+import 'transaction_item.dart';
+
 class TransactionsList extends StatelessWidget {
   List<Transaction> transactions;
 
@@ -19,7 +21,7 @@ class TransactionsList extends StatelessWidget {
                   "No transactions added yet!",
                   style: Theme.of(context).textTheme.title,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Container(
@@ -34,44 +36,10 @@ class TransactionsList extends StatelessWidget {
         : ListView.builder(
             itemBuilder: (context, index) {
               Transaction tx = transactions[index];
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                elevation: 5,
-                child: Dismissible(
-                  key: Key(tx.id),
-                  background: Container(
-                    color: Colors.red,
-                  ),
-                  direction: DismissDirection.startToEnd,
-                  onDismissed: (_) => deleteTransaction(tx.id),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FittedBox(
-                            child: Text("\$${tx.amount.toStringAsFixed(2)}")),
-                      ),
-                    ),
-                    title: Text(
-                      tx.title,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    subtitle: Text(DateFormat.yMMMd().format(tx.date)),
-                    trailing: (MediaQuery.of(context).size.width < 460)
-                        ? IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () => deleteTransaction(tx.id),
-                            color: Theme.of(context).errorColor,
-                          )
-                        : FlatButton.icon(
-                            textColor: Theme.of(context).errorColor,
-                            icon: Icon(Icons.delete),
-                            label: Text("Delete"),
-                            onPressed: () => deleteTransaction(tx.id),
-                          ),
-                  ),
-                ),
+
+              return TransactionItem(
+                tx: tx,
+                deleteTransaction: deleteTransaction,
               );
             },
             itemCount: transactions.length,
